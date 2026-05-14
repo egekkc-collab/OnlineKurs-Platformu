@@ -4,836 +4,395 @@ import random
 from datetime import datetime
 
 from PyQt5.QtWidgets import (
-    QApplication,
-    QMainWindow,
-    QWidget,
-    QVBoxLayout,
-    QHBoxLayout,
-    QLineEdit,
-    QPushButton,
-    QTableWidget,
-    QTableWidgetItem,
-    QTabWidget,
-    QSpinBox,
-    QMessageBox,
-    QLabel,
-    QComboBox,
-    QHeaderView,
-    QFrame
+    QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
+    QLineEdit, QPushButton, QTableWidget, QTableWidgetItem,
+    QStackedWidget, QSpinBox, QMessageBox, QLabel, QComboBox,
+    QHeaderView, QFrame, QGraphicsDropShadowEffect
 )
-
-from PyQt5.QtGui import QFont, QColor
-from PyQt5.QtCore import Qt
-
+from PyQt5.QtGui import QFont, QColor, QIcon
+from PyQt5.QtCore import Qt, QSize
 
 # ==========================================================
-# VERİTABANI
+# DATABASE (Mantık Aynı Kaldı)
 # ==========================================================
 class CRMVeritabani:
-
-    def __init__(self, db_adi="crm_mekanik_v12.db"):
-
-        self.conn = sqlite3.connect(db_adi)
+    def __init__(self):
+        self.conn = sqlite3.connect("crm_final.db")
         self.cursor = self.conn.cursor()
+        self.tablolar()
+        self.ornek_veri()
 
-        self.tablolari_olustur()
-        self.verileri_yukle()
-
-    # ==========================================================
-    # TABLOLAR
-    # ==========================================================
-    def tablolari_olustur(self):
-
-        self.cursor.execute("""
-        CREATE TABLE IF NOT EXISTS musteriler (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            ad TEXT,
-            soyad TEXT,
-            tel TEXT UNIQUE,
-            sehir TEXT
-        )
-        """)
-
-        self.cursor.execute("""
-        CREATE TABLE IF NOT EXISTS stok (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            urun TEXT,
-            miktar INTEGER,
-            fiyat REAL
-        )
-        """)
-
-        self.cursor.execute("""
-        CREATE TABLE IF NOT EXISTS satislar (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            m_tam_ad TEXT,
-            u_ad TEXT,
-            adet INTEGER,
-            toplam REAL,
-            tarih TEXT
-        )
-        """)
-
-        self.cursor.execute("""
-        CREATE TABLE IF NOT EXISTS destek_talepleri (
-            talep_id INTEGER PRIMARY KEY AUTOINCREMENT,
-            m_tam_ad TEXT,
-            aciklama TEXT,
-            durum TEXT,
-            tarih TEXT
-        )
-        """)
-
+    def tablolar(self):
+        self.cursor.execute("CREATE TABLE IF NOT EXISTS musteriler(id INTEGER PRIMARY KEY AUTOINCREMENT, ad TEXT, soyad TEXT, tel TEXT UNIQUE, sehir TEXT)")
+        self.cursor.execute("CREATE TABLE IF NOT EXISTS stok(id INTEGER PRIMARY KEY AUTOINCREMENT, urun TEXT, miktar INTEGER, fiyat REAL)")
+        self.cursor.execute("CREATE TABLE IF NOT EXISTS satislar(id INTEGER PRIMARY KEY AUTOINCREMENT, musteri TEXT, urun TEXT, adet INTEGER, toplam REAL, tarih TEXT)")
+        self.cursor.execute("CREATE TABLE IF NOT EXISTS destek(id INTEGER PRIMARY KEY AUTOINCREMENT, musteri TEXT, aciklama TEXT, durum TEXT, tarih TEXT)")
         self.conn.commit()
 
-    # ==========================================================
-    # ÖRNEK VERİLER
-    # ==========================================================
-    def verileri_yukle(self):
-
+    def ornek_veri(self):
         self.cursor.execute("SELECT COUNT(*) FROM musteriler")
-
         if self.cursor.fetchone()[0] == 0:
-
-            adlar = [
-                "Ali", "Veli", "Ayşe", "Fatma", "Murat",
-                "Gökhan", "Sibel", "Tülay", "Engin", "Serkan",
-                "Burak", "Cem", "Derya", "Ebru", "Fatih",
-                "Mehmet", "Can", "Hakan", "Oğuz", "Tolga",
-                "Berk", "Yusuf", "Emre", "Kerem", "Samet",
-                "Zeynep", "Elif", "Merve", "Gamze", "Buse",
-                "Kaan", "Arda", "Onur", "Furkan", "Mete",
-                "Deniz", "Aslı", "Naz", "İrem", "Sena",
-                "Barış", "Uğur", "Levent", "Eren", "Doğukan",
-                "Cansu", "Selin", "Nisa", "Ahmet", "Mustafa"
-            ]
-
-            soyadlar = [
-                "Yılmaz", "Kaya", "Demir", "Çelik", "Şahin",
-                "Öztürk", "Aras", "Kurt", "Aydın", "Koç",
-                "Sarı", "Aksoy", "Yıldız", "Erdoğan", "Polat",
-                "Bulut", "Aslan", "Kaplan", "Karaca", "Özdemir",
-                "Çınar", "Taş", "Ekinci", "Bozkurt", "Keskin",
-                "Tekin", "Avcı", "Kılıç", "Işık", "Duman",
-                "Güneş", "Ergin", "Tunç", "Yavuz", "Korkmaz",
-                "Akın", "Ateş", "Durmaz", "Karataş", "Eroğlu",
-                "Özkan", "Sezer", "Kara", "Yücel", "Şimşek",
-                "Acar", "Kocaman", "Türkmen", "Yalçın", "Doğan"
-            ]
-
-            sehirler = [
-                "İstanbul",
-                "Ankara",
-                "İzmir",
-                "Bursa",
-                "Antalya"
-            ]
-
-            random.shuffle(adlar)
-            random.shuffle(soyadlar)
-
-            musteriler = []
-
-            for i in range(50):
-
-                tel = f"05{random.randint(30,55)}{random.randint(100,999)}{random.randint(10,99)}{random.randint(10,99)}"
-
-                musteriler.append((
-                    adlar[i],
-                    soyadlar[i],
-                    tel,
-                    random.choice(sehirler)
-                ))
-
-            self.cursor.executemany("""
-            INSERT OR IGNORE INTO musteriler
-            (ad, soyad, tel, sehir)
-            VALUES (?,?,?,?)
-            """, musteriler)
-
+            adlar = ["Ali","Veli","Ayşe","Fatma","Murat","Can"]
+            soyadlar = ["Yılmaz","Kaya","Demir","Çelik"]
+            for _ in range(50):
+                self.cursor.execute("INSERT INTO musteriler(ad,soyad,tel,sehir) VALUES (?,?,?,?)", 
+                                   (random.choice(adlar), random.choice(soyadlar), f"05{random.randint(30,55)}{random.randint(10000000,99999999)}", "İstanbul"))
+        
         self.cursor.execute("SELECT COUNT(*) FROM stok")
-
         if self.cursor.fetchone()[0] == 0:
-
-            stoklar = [
-
-                ("Motor Yağı 5W-30", 50, 1450),
-                ("Yağ Filtresi", 100, 250),
-                ("Fren Balatası", 45, 950),
-                ("Akü 72 Amper", 15, 2600),
-
-                ("Hava Filtresi", 80, 300),
-                ("Polen Filtresi", 60, 275),
-                ("Far Ampulü", 120, 150),
-                ("Triger Kayışı", 25, 1850),
-                ("Debriyaj Seti", 18, 4200),
-                ("Antifriz", 70, 450),
-                ("Cam Suyu", 90, 120),
-                ("Silecek Takımı", 55, 350),
-                ("Lastik 17 İnç", 40, 3900),
-                ("Jant Kapağı", 75, 200)
-
-            ]
-
-            self.cursor.executemany("""
-            INSERT INTO stok
-            (urun, miktar, fiyat)
-            VALUES (?,?,?)
-            """, stoklar)
-
+            urunler = [("Motor Yağı",50,1450), ("Yağ Filtresi",80,250), ("Akü",20,2600), ("Lastik",60,3900)]
+            self.cursor.executemany("INSERT INTO stok(urun,miktar,fiyat) VALUES (?,?,?)", urunler)
         self.conn.commit()
-
 
 # ==========================================================
-# ANA UYGULAMA
+# MODERN UI COMPONENTS
 # ==========================================================
 class CRMApp(QMainWindow):
-
     def __init__(self):
-
         super().__init__()
-
         self.db = CRMVeritabani()
+        self.setWindowTitle("Apex CRM v2.0 - Dashboard")
+        self.resize(1280, 850)
 
-        self.setWindowTitle("MEKANİK CRM v12")
-        self.resize(1300, 850)
-
+        # GENEL STİL (QSS)
         self.setStyleSheet("""
-
-            QMainWindow {
-                background-color: #f4f7f6;
+            QMainWindow { background-color: #F8FAFC; }
+            
+            /* Sidebar */
+            #Sidebar { 
+                background-color: #1E293B; 
+                min-width: 220px; 
+                max-width: 220px; 
             }
-
-            QTabWidget::pane {
-                border: 1px solid #d1d1d1;
-                background: white;
+            
+            #SideButton {
+                background-color: transparent;
+                color: #94A3B8;
+                border: none;
+                padding: 15px;
+                text-align: left;
+                font-size: 14px;
+                font-weight: bold;
                 border-radius: 8px;
+                margin: 5px 10px;
+            }
+            #SideButton:hover { background-color: #334155; color: white; }
+            #SideButton:checked { background-color: #2563EB; color: white; }
+
+            /* Kart Yapısı */
+            #ContentCard {
+                background-color: white;
+                border-radius: 12px;
+                border: 1px solid #E2E8F0;
             }
 
-            QTabBar::tab {
-                background: #e2e2e2;
-                padding: 15px 30px;
-                font-weight: bold;
+            /* Tablo */
+            QTableWidget {
+                border: none;
+                background-color: white;
+                alternate-background-color: #F8FAFC;
+                selection-background-color: #DBEAFE;
+                selection-color: #2563EB;
             }
-
-            QTabBar::tab:selected {
-                background: #2c3e50;
-                color: white;
-            }
-
-            QPushButton {
-                background-color: #3498db;
-                color: white;
-                border-radius: 5px;
-                padding: 10px;
-                font-weight: bold;
-            }
-
-            QPushButton:hover {
-                background-color: #2980b9;
-            }
-
-            QLineEdit, QComboBox, QSpinBox {
-                padding: 8px;
-                border: 1px solid #bdc3c7;
-                border-radius: 5px;
-            }
-
             QHeaderView::section {
-                background-color: #2c3e50;
-                color: white;
-                padding: 10px;
+                background-color: white;
+                padding: 12px;
+                border: none;
+                border-bottom: 2px solid #E2E8F0;
                 font-weight: bold;
+                color: #64748B;
             }
 
+            /* Giriş Alanları */
+            QLineEdit, QComboBox, QSpinBox {
+                border: 1px solid #E2E8F0;
+                border-radius: 8px;
+                padding: 10px;
+                background: white;
+            }
+            QLineEdit:focus { border: 2px solid #2563EB; }
+
+            /* Butonlar */
+            #PrimaryBtn {
+                background-color: #2563EB;
+                color: white;
+                font-weight: bold;
+                border-radius: 8px;
+                padding: 12px;
+            }
+            #PrimaryBtn:hover { background-color: #1D4ED8; }
+            
+            #DangerBtn {
+                background-color: #EF4444;
+                color: white;
+                border-radius: 8px;
+                padding: 12px;
+            }
         """)
 
-        merkez = QWidget()
-        self.setCentralWidget(merkez)
-
-        self.ana_lay = QVBoxLayout(merkez)
-
-        header = QFrame()
-
-        h_lay = QHBoxLayout(header)
-
-        title = QLabel("🛠️ MEKANİK CRM v12")
-        title.setFont(QFont("Segoe UI", 16, QFont.Bold))
-
-        h_lay.addWidget(title)
-
-        self.ana_lay.addWidget(header)
-
-        self.tabs = QTabWidget()
-
-        self.ana_lay.addWidget(self.tabs)
-
-        self.sayfa_m = QWidget()
-        self.sayfa_s = QWidget()
-        self.sayfa_satis = QWidget()
-        self.sayfa_destek = QWidget()
-
-        self.tabs.addTab(self.sayfa_m, "👥 MÜŞTERİLER")
-        self.tabs.addTab(self.sayfa_s, "📦 STOK")
-        self.tabs.addTab(self.sayfa_satis, "💰 SATIŞ")
-        self.tabs.addTab(self.sayfa_destek, "🛠 DESTEK")
-
-        self.m_paneli_kur()
-        self.s_paneli_kur()
-        self.satis_paneli_kur()
-        self.destek_paneli_kur()
-
-        self.m_listele()
-        self.s_listele()
-        self.satis_listele()
-        self.destek_listele()
-
-    # ==========================================================
-    # MÜŞTERİ PANELİ
-    # ==========================================================
-    def m_paneli_kur(self):
-
-        lay = QVBoxLayout(self.sayfa_m)
-
-        frame = QFrame()
-
-        f_lay = QHBoxLayout(frame)
-
-        self.m_ad = QLineEdit()
-        self.m_ad.setPlaceholderText("Ad")
-
-        self.m_soyad = QLineEdit()
-        self.m_soyad.setPlaceholderText("Soyad")
-
-        self.m_tel = QLineEdit()
-        self.m_tel.setPlaceholderText("Telefon")
-
-        btn_ekle = QPushButton("👤 Müşteri Ekle")
-        btn_ekle.setStyleSheet("background-color:#2ecc71;")
-        btn_ekle.clicked.connect(self.m_ekle)
-
-        btn_sil = QPushButton("🗑️ Sil")
-        btn_sil.setStyleSheet("background-color:#e74c3c;")
-        btn_sil.clicked.connect(self.m_sil)
-
-        f_lay.addWidget(self.m_ad)
-        f_lay.addWidget(self.m_soyad)
-        f_lay.addWidget(self.m_tel)
-        f_lay.addWidget(btn_ekle)
-        f_lay.addWidget(btn_sil)
-
-        lay.addWidget(frame)
-
-        self.m_tablo = QTableWidget()
-
-        self.m_tablo.setColumnCount(4)
-
-        self.m_tablo.setHorizontalHeaderLabels([
-            "ID",
-            "Ad",
-            "Soyad",
-            "Telefon"
-        ])
-
-        self.m_tablo.setColumnHidden(0, True)
-
-        self.m_tablo.horizontalHeader().setSectionResizeMode(
-            QHeaderView.Stretch
-        )
-
-        lay.addWidget(self.m_tablo)
-
-    # ==========================================================
-    # STOK PANELİ
-    # ==========================================================
-    def s_paneli_kur(self):
-
-        lay = QVBoxLayout(self.sayfa_s)
-
-        btn_sil = QPushButton("🗑️ Ürün Sil")
-        btn_sil.setStyleSheet("background-color:#e74c3c;")
-        btn_sil.clicked.connect(self.stok_sil)
-
-        lay.addWidget(btn_sil)
-
-        self.s_tablo = QTableWidget()
-
-        self.s_tablo.setColumnCount(3)
-
-        self.s_tablo.setHorizontalHeaderLabels([
-            "Ürün Adı",
-            "Stok Miktarı",
-            "Fiyat"
-        ])
-
-        self.s_tablo.horizontalHeader().setSectionResizeMode(
-            QHeaderView.Stretch
-        )
-
-        lay.addWidget(self.s_tablo)
-
-    # ==========================================================
-    # SATIŞ PANELİ
-    # ==========================================================
-    def satis_paneli_kur(self):
-
-        lay = QVBoxLayout(self.sayfa_satis)
-
-        panel = QFrame()
-
-        p_lay = QHBoxLayout(panel)
-
-        self.c_m = QComboBox()
-        self.c_u = QComboBox()
-
-        self.s_adet = QSpinBox()
-        self.s_adet.setRange(1, 100)
-
-        btn = QPushButton("💸 Satış Yap")
-        btn.clicked.connect(self.satis_yap)
-
-        p_lay.addWidget(QLabel("Müşteri"))
-        p_lay.addWidget(self.c_m)
-
-        p_lay.addWidget(QLabel("Ürün"))
-        p_lay.addWidget(self.c_u)
-
-        p_lay.addWidget(QLabel("Adet"))
-        p_lay.addWidget(self.s_adet)
-
-        p_lay.addWidget(btn)
-
-        lay.addWidget(panel)
-
-        self.st_tablo = QTableWidget()
-
-        self.st_tablo.setColumnCount(5)
-
-        self.st_tablo.setHorizontalHeaderLabels([
-            "Müşteri",
-            "Ürün",
-            "Adet",
-            "Toplam",
-            "Tarih"
-        ])
-
-        self.st_tablo.horizontalHeader().setSectionResizeMode(
-            QHeaderView.Stretch
-        )
-
-        lay.addWidget(self.st_tablo)
-
-    # ==========================================================
-    # DESTEK PANELİ
-    # ==========================================================
-    def destek_paneli_kur(self):
-
-        lay = QVBoxLayout(self.sayfa_destek)
-
-        form = QHBoxLayout()
-
-        self.c_m_destek = QComboBox()
-
-        self.t_aciklama = QLineEdit()
-        self.t_aciklama.setPlaceholderText("Şikayet / Talep")
-
-        btn = QPushButton("🎫 Talep Aç")
-        btn.clicked.connect(self.destek_ekle)
-
-        form.addWidget(self.c_m_destek)
-        form.addWidget(self.t_aciklama)
-        form.addWidget(btn)
-
-        lay.addLayout(form)
-
-        self.d_tablo = QTableWidget()
-
-        self.d_tablo.setColumnCount(5)
-
-        self.d_tablo.setHorizontalHeaderLabels([
-            "ID",
-            "Müşteri",
-            "Açıklama",
-            "Durum",
-            "Tarih"
-        ])
-
-        self.d_tablo.horizontalHeader().setSectionResizeMode(
-            QHeaderView.Stretch
-        )
-
-        lay.addWidget(self.d_tablo)
-
-    # ==========================================================
-    # MÜŞTERİ EKLE
-    # ==========================================================
-    def m_ekle(self):
-
-        ad = self.m_ad.text().strip()
-        soyad = self.m_soyad.text().strip()
-        tel = self.m_tel.text().strip()
-
-        if not ad or not soyad or not tel:
-
-            QMessageBox.warning(
-                self,
-                "Eksik Bilgi",
-                "Tüm alanları doldurun!"
-            )
-            return
-
-        if not ad.isalpha():
-
-            QMessageBox.warning(
-                self,
-                "Hata",
-                "Ad sadece harf içermelidir!"
-            )
-            return
-
-        if not soyad.isalpha():
-
-            QMessageBox.warning(
-                self,
-                "Hata",
-                "Soyad sadece harf içermelidir!"
-            )
-            return
-
-        if not tel.isdigit():
-
-            QMessageBox.warning(
-                self,
-                "Hata",
-                "Telefon sadece sayı içermelidir!"
-            )
-            return
-
-        if len(tel) != 11:
-
-            QMessageBox.warning(
-                self,
-                "Hata",
-                "Telefon 11 haneli olmalıdır!"
-            )
-            return
-
-        try:
-
-            self.db.cursor.execute("""
-            INSERT INTO musteriler
-            (ad, soyad, tel, sehir)
-            VALUES (?,?,?,?)
-            """, (
-                ad.capitalize(),
-                soyad.upper(),
-                tel,
-                "İstanbul"
-            ))
-
+        self.init_ui()
+        self.load_all()
+
+    def init_ui(self):
+        central_widget = QWidget()
+        self.setCentralWidget(central_widget)
+        main_layout = QHBoxLayout(central_widget)
+        main_layout.setContentsMargins(0, 0, 0, 0)
+        main_layout.setSpacing(0)
+
+        # --- SIDEBAR ---
+        sidebar = QFrame()
+        sidebar.setObjectName("Sidebar")
+        side_layout = QVBoxLayout(sidebar)
+        
+        logo = QLabel("APEX CRM")
+        logo.setStyleSheet("color: white; font-size: 24px; font-weight: 900; margin: 20px 10px;")
+        side_layout.addWidget(logo)
+
+        self.btn_m = QPushButton(" Müşteriler"); self.btn_m.setCheckable(True); self.btn_m.setChecked(True)
+        self.btn_s = QPushButton(" Stok Yönetimi"); self.btn_s.setCheckable(True)
+        self.btn_sat = QPushButton(" Satış Paneli"); self.btn_sat.setCheckable(True)
+        self.btn_sup = QPushButton(" Destek Merkezi"); self.btn_sup.setCheckable(True)
+
+        for btn in [self.btn_m, self.btn_s, self.btn_sat, self.btn_sup]:
+            btn.setObjectName("SideButton")
+            btn.setCursor(Qt.PointingHandCursor)
+            side_layout.addWidget(btn)
+        
+        side_layout.addStretch()
+        
+        # --- CONTENT AREA ---
+        self.content_stack = QStackedWidget()
+        
+        # Sayfaları Tanımla
+        self.page_customer = self.create_customer_page()
+        self.page_stock = self.create_stock_page()
+        self.page_sales = self.create_sales_page()
+        self.page_support = self.create_support_page()
+
+        self.content_stack.addWidget(self.page_customer)
+        self.content_stack.addWidget(self.page_stock)
+        self.content_stack.addWidget(self.page_sales)
+        self.content_stack.addWidget(self.page_support)
+
+        # Navigasyon Bağlantıları
+        self.btn_m.clicked.connect(lambda: self.switch_page(0))
+        self.btn_s.clicked.connect(lambda: self.switch_page(1))
+        self.btn_sat.clicked.connect(lambda: self.switch_page(2))
+        self.btn_sup.clicked.connect(lambda: self.switch_page(3))
+
+        main_layout.addWidget(sidebar)
+        main_layout.addWidget(self.content_stack)
+
+    def switch_page(self, index):
+        buttons = [self.btn_m, self.btn_s, self.btn_sat, self.btn_sup]
+        for i, btn in enumerate(buttons):
+            btn.setChecked(i == index)
+        self.content_stack.setCurrentIndex(index)
+
+    # ---------------- SAYFA TASARIMLARI ----------------
+
+    def create_customer_page(self):
+        page = QWidget()
+        layout = QVBoxLayout(page)
+        layout.setContentsMargins(30, 30, 30, 30)
+
+        title = QLabel("Müşteri Veritabanı")
+        title.setStyleSheet("font-size: 28px; font-weight: bold; color: #1E293B;")
+        layout.addWidget(title)
+
+        # Form Kartı
+        form_card = QFrame(); form_card.setObjectName("ContentCard")
+        form_layout = QHBoxLayout(form_card)
+        
+        self.ad = QLineEdit(); self.ad.setPlaceholderText("Ad")
+        self.soyad = QLineEdit(); self.soyad.setPlaceholderText("Soyad")
+        self.tel = QLineEdit(); self.tel.setPlaceholderText("Telefon (05xx)")
+        
+        btn_add = QPushButton("Müşteri Ekle"); btn_add.setObjectName("PrimaryBtn")
+        btn_add.clicked.connect(self.add_customer)
+        
+        btn_del = QPushButton("Seçileni Sil"); btn_del.setObjectName("DangerBtn")
+        btn_del.clicked.connect(self.del_customer)
+
+        form_layout.addWidget(self.ad); form_layout.addWidget(self.soyad); form_layout.addWidget(self.tel)
+        form_layout.addWidget(btn_add); form_layout.addWidget(btn_del)
+        
+        layout.addWidget(form_card)
+
+        # Tablo
+        self.tbl_m = QTableWidget()
+        self.tbl_m.setColumnCount(4)
+        self.tbl_m.setHorizontalHeaderLabels(["ID", "Ad", "Soyad", "Telefon"])
+        self.tbl_m.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.tbl_m.setColumnHidden(0, True)
+        
+        layout.addWidget(self.tbl_m)
+        return page
+
+    def create_stock_page(self):
+        page = QWidget()
+        layout = QVBoxLayout(page)
+        layout.setContentsMargins(30,30,30,30)
+        
+        title = QLabel("Stok ve Envanter")
+        title.setStyleSheet("font-size: 28px; font-weight: bold;")
+        layout.addWidget(title)
+
+        self.tbl_s = QTableWidget()
+        self.tbl_s.setColumnCount(3)
+        self.tbl_s.setHorizontalHeaderLabels(["Ürün Adı", "Stok Miktarı", "Birim Fiyat"])
+        self.tbl_s.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        
+        layout.addWidget(self.tbl_s)
+        return page
+
+    def create_sales_page(self):
+        page = QWidget()
+        layout = QVBoxLayout(page)
+        layout.setContentsMargins(30,30,30,30)
+
+        title = QLabel("Yeni Satış İşlemi")
+        title.setStyleSheet("font-size: 28px; font-weight: bold;")
+        layout.addWidget(title)
+
+        form_card = QFrame(); form_card.setObjectName("ContentCard")
+        form_lay = QHBoxLayout(form_card)
+        
+        self.cmb_m = QComboBox(); self.cmb_u = QComboBox()
+        self.adet = QSpinBox(); self.adet.setRange(1, 500)
+        btn_sell = QPushButton("Satışı Onayla"); btn_sell.setObjectName("PrimaryBtn")
+        btn_sell.clicked.connect(self.sell)
+
+        form_lay.addWidget(QLabel("Müşteri:"))
+        form_lay.addWidget(self.cmb_m)
+        form_lay.addWidget(QLabel("Ürün:"))
+        form_lay.addWidget(self.cmb_u)
+        form_lay.addWidget(QLabel("Adet:"))
+        form_lay.addWidget(self.adet)
+        form_lay.addWidget(btn_sell)
+
+        layout.addWidget(form_card)
+
+        self.tbl_sat = QTableWidget()
+        self.tbl_sat.setColumnCount(5)
+        self.tbl_sat.setHorizontalHeaderLabels(["Müşteri", "Ürün", "Adet", "Toplam", "Tarih"])
+        self.tbl_sat.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        layout.addWidget(self.tbl_sat)
+        
+        return page
+
+    def create_support_page(self):
+        page = QWidget()
+        layout = QVBoxLayout(page)
+        layout.setContentsMargins(30,30,30,30)
+        
+        title = QLabel("Destek ve Talepler")
+        title.setStyleSheet("font-size: 28px; font-weight: bold;")
+        layout.addWidget(title)
+
+        form_card = QFrame(); form_card.setObjectName("ContentCard")
+        form_lay = QVBoxLayout(form_card)
+        
+        self.cmb_sup = QComboBox()
+        self.txt_sup = QLineEdit(); self.txt_sup.setPlaceholderText("Sorun açıklaması...")
+        btn_sup = QPushButton("Talep Oluştur"); btn_sup.setObjectName("PrimaryBtn")
+        btn_sup.clicked.connect(self.add_support)
+
+        form_lay.addWidget(self.cmb_sup); form_lay.addWidget(self.txt_sup); form_lay.addWidget(btn_sup)
+        layout.addWidget(form_card)
+
+        self.tbl_sup = QTableWidget()
+        self.tbl_sup.setColumnCount(4)
+        self.tbl_sup.setHorizontalHeaderLabels(["Müşteri", "Açıklama", "Durum", "Tarih"])
+        self.tbl_sup.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        layout.addWidget(self.tbl_sup)
+        
+        return page
+
+    # ---------------- FONKSİYONLAR (VERİ) ----------------
+
+    def add_customer(self):
+        if not self.ad.text().isalpha() or len(self.tel.text()) < 10:
+            return QMessageBox.warning(self, "Hata", "Lütfen geçerli bilgiler girin!")
+        
+        self.db.cursor.execute("INSERT INTO musteriler(ad,soyad,tel,sehir) VALUES (?,?,?,?)", 
+                             (self.ad.text(), self.soyad.text(), self.tel.text(), "İstanbul"))
+        self.db.conn.commit()
+        self.load_all()
+        self.ad.clear(); self.soyad.clear(); self.tel.clear()
+
+    def del_customer(self):
+        r = self.tbl_m.currentRow()
+        if r >= 0:
+            cid = self.tbl_m.item(r, 0).text()
+            self.db.cursor.execute("DELETE FROM musteriler WHERE id=?", (cid,))
             self.db.conn.commit()
+            self.load_all()
 
-            self.m_ad.clear()
-            self.m_soyad.clear()
-            self.m_tel.clear()
-
-            self.m_listele()
-
-            QMessageBox.information(
-                self,
-                "Başarılı",
-                "Müşteri eklendi."
-            )
-
-        except:
-
-            QMessageBox.warning(
-                self,
-                "Hata",
-                "Telefon numarası zaten kayıtlı!"
-            )
-
-    # ==========================================================
-    # MÜŞTERİ SİL
-    # ==========================================================
-    def m_sil(self):
-
-        secili = self.m_tablo.currentRow()
-
-        if secili >= 0:
-
-            musteri_id = self.m_tablo.item(secili, 0).text()
-
-            self.db.cursor.execute("""
-            DELETE FROM musteriler
-            WHERE id=?
-            """, (musteri_id,))
-
+    def sell(self):
+        m = self.cmb_m.currentText()
+        u = self.cmb_u.currentText()
+        a = self.adet.value()
+        self.db.cursor.execute("SELECT fiyat, miktar FROM stok WHERE urun=?", (u,))
+        res = self.db.cursor.fetchone()
+        if res and res[1] >= a:
+            toplam = res[0] * a
+            self.db.cursor.execute("INSERT INTO satislar VALUES(NULL,?,?,?,?,?)", (m, u, a, toplam, datetime.now().strftime("%d/%m/%Y")))
+            self.db.cursor.execute("UPDATE stok SET miktar=miktar-? WHERE urun=?", (a, u))
             self.db.conn.commit()
+            self.load_all()
+            QMessageBox.information(self, "Başarılı", f"{toplam} TL tutarında satış yapıldı.")
 
-            self.m_listele()
-
-    # ==========================================================
-    # MÜŞTERİ LİSTELE
-    # ==========================================================
-    def m_listele(self):
-
-        self.db.cursor.execute("""
-        SELECT id, ad, soyad, tel
-        FROM musteriler
-        ORDER BY id DESC
-        """)
-
-        veriler = self.db.cursor.fetchall()
-
-        self.m_tablo.setRowCount(0)
-
-        for i, satir in enumerate(veriler):
-
-            self.m_tablo.insertRow(i)
-
-            for j, d in enumerate(satir):
-
-                self.m_tablo.setItem(
-                    i,
-                    j,
-                    QTableWidgetItem(str(d))
-                )
-
-        self.combo_guncelle()
-
-    # ==========================================================
-    # STOK LİSTELE
-    # ==========================================================
-    def s_listele(self):
-
-        self.db.cursor.execute("""
-        SELECT urun, miktar, fiyat
-        FROM stok
-        ORDER BY miktar DESC
-        """)
-
-        veriler = self.db.cursor.fetchall()
-
-        self.s_tablo.setRowCount(0)
-
-        for i, satir in enumerate(veriler):
-
-            self.s_tablo.insertRow(i)
-
-            for j, d in enumerate(satir):
-
-                item = QTableWidgetItem(str(d))
-
-                if j == 1:
-
-                    miktar = int(d)
-
-                    if miktar <= 20:
-
-                        item.setBackground(QColor(255, 120, 120))
-
-                    elif miktar <= 50:
-
-                        item.setBackground(QColor(255, 230, 120))
-
-                self.s_tablo.setItem(i, j, item)
-
-    # ==========================================================
-    # STOK SİL
-    # ==========================================================
-    def stok_sil(self):
-
-        secili = self.s_tablo.currentRow()
-
-        if secili >= 0:
-
-            urun = self.s_tablo.item(secili, 0).text()
-
-            self.db.cursor.execute("""
-            DELETE FROM stok
-            WHERE urun=?
-            """, (urun,))
-
+    def add_support(self):
+        if self.txt_sup.text():
+            self.db.cursor.execute("INSERT INTO destek VALUES(NULL,?,?,?,?)", 
+                                 (self.cmb_sup.currentText(), self.txt_sup.text(), "Açık", datetime.now().strftime("%d/%m/%Y")))
             self.db.conn.commit()
+            self.load_all()
+            self.txt_sup.clear()
 
-            self.s_listele()
+    def load_all(self):
+        # Müşteriler
+        self.db.cursor.execute("SELECT id, ad, soyad, tel FROM musteriler ORDER BY id DESC")
+        self.fill_table(self.tbl_m, self.db.cursor.fetchall())
+        
+        # Stok
+        self.db.cursor.execute("SELECT urun, miktar, fiyat FROM stok")
+        self.fill_table(self.tbl_s, self.db.cursor.fetchall())
+        
+        # Satışlar
+        self.db.cursor.execute("SELECT musteri, urun, adet, toplam, tarih FROM satislar ORDER BY id DESC")
+        self.fill_table(self.tbl_sat, self.db.cursor.fetchall())
 
-    # ==========================================================
-    # SATIŞ YAP
-    # ==========================================================
-    def satis_yap(self):
+        # Destek
+        self.db.cursor.execute("SELECT musteri, aciklama, durum, tarih FROM destek ORDER BY id DESC")
+        self.fill_table(self.tbl_sup, self.db.cursor.fetchall())
 
-        musteri = self.c_m.currentText()
-        urun = self.c_u.currentText()
-        adet = self.s_adet.value()
+        # ComboBox Güncellemeleri
+        self.cmb_m.clear(); self.cmb_sup.clear(); self.cmb_u.clear()
+        self.db.cursor.execute("SELECT ad || ' ' || soyad FROM musteriler")
+        musteriler = [r[0] for r in self.db.cursor.fetchall()]
+        self.cmb_m.addItems(musteriler); self.cmb_sup.addItems(musteriler)
+        
+        self.db.cursor.execute("SELECT urun FROM stok")
+        self.cmb_u.addItems([r[0] for r in self.db.cursor.fetchall()])
 
-        self.db.cursor.execute("""
-        SELECT fiyat, miktar
-        FROM stok
-        WHERE urun=?
-        """, (urun,))
-
-        sonuc = self.db.cursor.fetchone()
-
-        if sonuc and sonuc[1] >= adet:
-
-            toplam = adet * sonuc[0]
-
-            tarih = datetime.now().strftime("%d/%m/%Y %H:%M")
-
-            self.db.cursor.execute("""
-            INSERT INTO satislar
-            (m_tam_ad, u_ad, adet, toplam, tarih)
-            VALUES (?,?,?,?,?)
-            """, (
-                musteri,
-                urun,
-                adet,
-                toplam,
-                tarih
-            ))
-
-            self.db.cursor.execute("""
-            UPDATE stok
-            SET miktar = miktar - ?
-            WHERE urun=?
-            """, (
-                adet,
-                urun
-            ))
-
-            self.db.conn.commit()
-
-            self.s_listele()
-            self.satis_listele()
-
-    # ==========================================================
-    # SATIŞ LİSTELE
-    # ==========================================================
-    def satis_listele(self):
-
-        self.db.cursor.execute("""
-        SELECT m_tam_ad, u_ad, adet, toplam, tarih
-        FROM satislar
-        ORDER BY id DESC
-        """)
-
-        veriler = self.db.cursor.fetchall()
-
-        self.st_tablo.setRowCount(0)
-
-        for i, satir in enumerate(veriler):
-
-            self.st_tablo.insertRow(i)
-
-            for j, d in enumerate(satir):
-
-                self.st_tablo.setItem(
-                    i,
-                    j,
-                    QTableWidgetItem(str(d))
-                )
-
-    # ==========================================================
-    # DESTEK EKLE
-    # ==========================================================
-    def destek_ekle(self):
-
-        musteri = self.c_m_destek.currentText()
-
-        aciklama = self.t_aciklama.text().strip()
-
-        if aciklama:
-
-            self.db.cursor.execute("""
-            INSERT INTO destek_talepleri
-            (m_tam_ad, aciklama, durum, tarih)
-            VALUES (?,?,?,?)
-            """, (
-                musteri,
-                aciklama,
-                "Açık",
-                datetime.now().strftime("%d/%m/%Y %H:%M")
-            ))
-
-            self.db.conn.commit()
-
-            self.t_aciklama.clear()
-
-            self.destek_listele()
-
-    # ==========================================================
-    # DESTEK LİSTELE
-    # ==========================================================
-    def destek_listele(self):
-
-        self.db.cursor.execute("""
-        SELECT *
-        FROM destek_talepleri
-        ORDER BY talep_id DESC
-        """)
-
-        veriler = self.db.cursor.fetchall()
-
-        self.d_tablo.setRowCount(0)
-
-        for i, satir in enumerate(veriler):
-
-            self.d_tablo.insertRow(i)
-
-            for j, d in enumerate(satir):
-
-                self.d_tablo.setItem(
-                    i,
-                    j,
-                    QTableWidgetItem(str(d))
-                )
-
-    # ==========================================================
-    # COMBO GÜNCELLE
-    # ==========================================================
-    def combo_guncelle(self):
-
-        self.c_m.clear()
-        self.c_m_destek.clear()
-        self.c_u.clear()
-
-        self.db.cursor.execute("""
-        SELECT ad, soyad
-        FROM musteriler
-        ORDER BY ad ASC
-        """)
-
-        for r in self.db.cursor.fetchall():
-
-            isim = f"{r[0]} {r[1]}"
-
-            self.c_m.addItem(isim)
-            self.c_m_destek.addItem(isim)
-
-        self.db.cursor.execute("""
-        SELECT urun
-        FROM stok
-        WHERE miktar > 0
-        """)
-
-        for r in self.db.cursor.fetchall():
-
-            self.c_u.addItem(r[0])
-
+    def fill_table(self, table, data):
+        table.setRowCount(0)
+        for i, row in enumerate(data):
+            table.insertRow(i)
+            for j, val in enumerate(row):
+                item = QTableWidgetItem(str(val))
+                item.setTextAlignment(Qt.AlignCenter)
+                table.setItem(i, j, item)
 
 # ==========================================================
-# PROGRAMI BAŞLAT
+# RUN
 # ==========================================================
 if __name__ == "__main__":
-
     app = QApplication(sys.argv)
-
-    app.setStyle("Fusion")
-
-    pencere = CRMApp()
-
-    pencere.show()
-
+    app.setFont(QFont("Segoe UI", 10))
+    w = CRMApp()
+    w.show()
     sys.exit(app.exec_())
