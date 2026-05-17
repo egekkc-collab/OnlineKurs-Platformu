@@ -3,11 +3,6 @@
 Profesyonel ve kullanıcı dostu bir Eğitim ve Kurs Yönetim Platformu. CustomTkinter ile geliştirilmiş, SQLite veritabanı desteğine sahip, modern, hızlı ve karanlık (dark) temalı lüks bir masaüstü arayüzü sunmaktadır.
 
 
-
-
-
-
-
 # 📋 Özellikler
 
 # 🔐 Güvenli Giriş ve Kimlik Doğrulama
