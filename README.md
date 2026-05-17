@@ -14,6 +14,7 @@ Profesyonel ve kullanıcı dostu bir Eğitim ve Kurs Yönetim Platformu. CustomT
   
 - ⚠️ **Akıllı Bildirimler** - Boş alan bırakıldığında veya hatalı şifre girildiğinde anlık olarak beliren uyarı metinleri
 
+- <img width="1914" height="1014" alt="image" src="https://github.com/user-attachments/assets/f1495ecb-0a4f-479c-a5ec-31d86e679f5d" />
 
 # 📊 Dashboard ve İstatistikler
 - 📈 **Sistem Özeti** - Eğitmen, öğrenci ve kurs sayılarının anlık takibi
@@ -21,7 +22,6 @@ Profesyonel ve kullanıcı dostu bir Eğitim ve Kurs Yönetim Platformu. CustomT
 - 🎯 **Dinamik Kartlar** - Yapılan tüm işlemlerin saniyeler içinde istatistik ekranına yansıması
 - 📅 **Tarih Entegrasyonu** - Sistemin kullanıldığı günün anlık tarih gösterimi
 
-- <img width="1914" height="1014" alt="image" src="https://github.com/user-attachments/assets/f1495ecb-0a4f-479c-a5ec-31d86e679f5d" />
 
 
 <img width="1440" height="900" alt="Dashboard Goruntusu" src="https://github.com/user-attachments/assets/ornek-link-buraya-gelecek-1" />
