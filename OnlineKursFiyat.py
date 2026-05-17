@@ -37,7 +37,6 @@ class DatabaseManager:
             kullanici_adi TEXT PRIMARY KEY, sifre TEXT)''')
         self.cursor.execute('''CREATE TABLE IF NOT EXISTS egitmenler (
             id INTEGER PRIMARY KEY AUTOINCREMENT, ad TEXT UNIQUE, uzmanlik TEXT)''')
-        # ÖĞRENCİ TABLOSUNA AUTOINCREMENT EKLENDİ
         self.cursor.execute('''CREATE TABLE IF NOT EXISTS ogrenciler (
             id INTEGER PRIMARY KEY AUTOINCREMENT, ad TEXT, email TEXT)''')
         self.cursor.execute('''CREATE TABLE IF NOT EXISTS kurslar (
@@ -45,6 +44,7 @@ class DatabaseManager:
         self.cursor.execute('''CREATE TABLE IF NOT EXISTS kayitlar (
             ogrenci_id INTEGER, kurs_id TEXT,
             PRIMARY KEY(ogrenci_id, kurs_id))''')
+        
         self.cursor.execute("PRAGMA table_info(kurslar)")
         columns = [row[1] for row in self.cursor.fetchall()]
         if "fiyat" not in columns:
@@ -60,7 +60,6 @@ class DatabaseManager:
         if self.cursor.fetchone()[0] == 0:
             self.egitmen_ekle("Ahmet Yılmaz", "Yapay Zeka Uzmanı")
             self.egitmen_ekle("Zeynep Demir", "Arayüz Tasarımı")
-            # ÖĞRENCİ EKLERKEN ARTIK ID GÖNDERMİYORUZ, SİSTEM 1, 2, 3 DİYE ATAYACAK
             self.ogrenci_ekle("Ali Kaya", "ali@mail.com")
             self.ogrenci_ekle("Ayşe Çelik", "ayse@mail.com")
             self.ogrenci_ekle("Caner Gezer", "caner@mail.com")
@@ -81,12 +80,10 @@ class DatabaseManager:
             self.conn.commit(); return True, "Eğitmen başarıyla sisteme eklendi."
         except sqlite3.IntegrityError: return False, "Bu isimde bir eğitmen zaten var!"
 
-    # ÖĞRENCİ EKLEME FONKSİYONU GÜNCELLENDİ (ID OTOMATİK OLUŞTURULUYOR)
     def ogrenci_ekle(self, ad, email):
         try:
             self.cursor.execute("INSERT INTO ogrenciler (ad, email) VALUES (?, ?)", (ad, email))
             self.conn.commit()
-            # Eklenen öğrencinin yeni atanan ID'sini geri döndürüyoruz
             return True, "Öğrenci kaydı başarıyla oluşturuldu.", self.cursor.lastrowid
         except Exception as e: return False, str(e), None
 
@@ -250,13 +247,14 @@ class AdminDashboard(ctk.CTkFrame):
         self.active_indicator.place(x=5, y=-100)
 
         self.menu_buttons = {}
+        # Emojiyi sadeleştirilmiş (görünmez formatsız) haliyle değiştirdik
         menus = [
             ("📊", "Genel Bakış"),
             ("👨‍🏫", "Eğitmen Yönetimi"),
             ("🎓", "Öğrenci Yönetimi"),
             ("📚", "Kurs Yönetimi"),
             ("⚡", "Hızlı Kayıt"),
-            ("🗄️", "Veritabanı Gezgini")
+            ("🗄", "Veritabanı Gezgini")
         ]
 
         def on_enter(e, b_name):
@@ -268,8 +266,11 @@ class AdminDashboard(ctk.CTkFrame):
                 self.menu_buttons[b_name].configure(text_color=COLORS["text_muted"])
 
         for i, (icon, name) in enumerate(menus):
+            # Dinamik boşluk ayarı - Hiza sorununu kesin çözer
+            bosluk = " " if name == "Veritabanı Gezgini" else "   "
+            
             btn = ctk.CTkButton(
-                self.sidebar_frame, text=f"  {icon}   {name}", font=self.f_menu, anchor="w",
+                self.sidebar_frame, text=f"  {icon}{bosluk}{name}", font=self.f_menu, anchor="w",
                 fg_color="transparent", text_color=COLORS["text_muted"], hover_color=COLORS["bg_card"],
                 corner_radius=10, height=45, command=lambda n=name: self.select_frame_by_name(n)
             )
@@ -281,7 +282,7 @@ class AdminDashboard(ctk.CTkFrame):
         profile_f = ctk.CTkFrame(self.sidebar_frame, fg_color=COLORS["bg_card"], corner_radius=12)
         profile_f.grid(row=8, column=0, padx=15, pady=20, sticky="s")
         ctk.CTkLabel(profile_f, text="👤 Admin: Yetkili", font=ctk.CTkFont(size=12, weight="bold"), text_color=COLORS["text_main"]).pack(pady=(10,0), padx=20)
-        ctk.CTkLabel(profile_f, text="V 13.1 (Auto-ID)", font=ctk.CTkFont(size=11), text_color=COLORS["success"]).pack(pady=(0,10), padx=20)
+        ctk.CTkLabel(profile_f, text="V 14.1 (Proje Sürümü)", font=ctk.CTkFont(size=11), text_color=COLORS["success"]).pack(pady=(0,10), padx=20)
 
     def _safe_animate_indicator(self, btn):
         target_y = btn.winfo_y()
@@ -414,14 +415,16 @@ class AdminDashboard(ctk.CTkFrame):
         info_card = ctk.CTkFrame(bottom_f, fg_color=COLORS["bg_card"], corner_radius=15)
         info_card.grid(row=0, column=0, sticky="nsew", padx=10)
         ctk.CTkLabel(info_card, text="Sistem Özeti", font=self.f_menu, text_color=COLORS["text_main"]).pack(anchor="w", padx=20, pady=(20,10))
-        ctk.CTkLabel(info_card, text="• Tüm veritabanı bağlantıları stabil.\n• Veriler şifrelenmiş SQLite dosyasında tutuluyor.\n• Öğrenci ID'leri otomatik atanmaktadır.\n• Katı veri doğrulama protokolleri devrededir.", 
+        ctk.CTkLabel(info_card, text="• Tüm veritabanı bağlantıları stabil.\n• Öğrenci ID'leri otomatik atanmaktadır.\n• Finansal veriler gerçek zamanlı hesaplanır.\n• Katı veri doğrulama protokolleri devrededir.", 
                      font=self.f_label, text_color=COLORS["text_muted"], justify="left").pack(anchor="w", padx=20)
 
-        quick_card = ctk.CTkFrame(bottom_f, fg_color=COLORS["bg_card"], corner_radius=15)
-        quick_card.grid(row=0, column=1, sticky="nsew", padx=10)
-        ctk.CTkLabel(quick_card, text="Hızlı Kısayollar", font=self.f_menu, text_color=COLORS["text_main"]).pack(anchor="w", padx=20, pady=(20,10))
-        ctk.CTkButton(quick_card, text="+ Yeni Kurs Ekle", fg_color=COLORS["primary"], command=lambda: self.select_frame_by_name("Kurs Yönetimi")).pack(fill="x", padx=20, pady=5)
-        ctk.CTkButton(quick_card, text="⚡ Kayıt Yap", fg_color=COLORS["success"], command=lambda: self.select_frame_by_name("Hızlı Kayıt")).pack(fill="x", padx=20, pady=5)
+        # ---> FİNANSAL GELİR KARTI <---
+        finans_card = ctk.CTkFrame(bottom_f, fg_color=COLORS["bg_card"], corner_radius=15)
+        finans_card.grid(row=0, column=1, sticky="nsew", padx=10)
+        ctk.CTkLabel(finans_card, text="💸 Toplam Beklenen Gelir (Ciro)", font=self.f_menu, text_color=COLORS["text_main"]).pack(anchor="w", padx=20, pady=(20,10))
+        self.lbl_ciro = ctk.CTkLabel(finans_card, text="0.00 ₺", font=ctk.CTkFont(size=48, weight="bold"), text_color=COLORS["success"])
+        self.lbl_ciro.pack(anchor="w", padx=20, pady=(5, 5))
+        ctk.CTkLabel(finans_card, text="*Kursa kayıtlı öğrenci sayısı x Kurs Fiyatı baz alınır.", font=ctk.CTkFont(size=11), text_color=COLORS["text_muted"]).pack(anchor="w", padx=20)
 
     def _page_egitmen(self):
         frame = ctk.CTkFrame(self.content_area, fg_color="transparent")
@@ -454,7 +457,6 @@ class AdminDashboard(ctk.CTkFrame):
         
         ctk.CTkLabel(form_card, text="Öğrenci Kayıt Formu", font=ctk.CTkFont(size=18, weight="bold")).pack(pady=(25,10))
         
-        # ID GİRİŞ KUTUSU KALDIRILDI - OTOMATİK ATANACAK
         self.ent_ogr_ad = self._create_input(form_card, "Ad Soyad", "Öğrenci ismi")
         self.ent_ogr_email = self._create_input(form_card, "Email Adresi", "ornek@mail.com")
         ctk.CTkLabel(form_card, text="*Öğrenci ID numarası otomatik atanır.", text_color=COLORS["text_muted"], font=ctk.CTkFont(size=11)).pack(pady=(10,0))
@@ -465,9 +467,18 @@ class AdminDashboard(ctk.CTkFrame):
         table_card = ctk.CTkFrame(frame, fg_color=COLORS["bg_card"], corner_radius=15)
         table_card.pack(side="right", fill="both", expand=True)
         
-        self._create_table_header(table_card, "Sistemdeki Öğrenciler")
-        self._create_table_action(table_card, "❌ Seçili Öğrenciyi Sil", self._islem_ogrenci_sil)
+        # ---> CANLI ARAMA <---
+        top_f = ctk.CTkFrame(table_card, fg_color="transparent")
+        top_f.pack(fill="x", padx=25, pady=(25, 5))
+        
+        ctk.CTkLabel(top_f, text="Sistemdeki Öğrenciler", font=ctk.CTkFont(size=18, weight="bold"), text_color=COLORS["text_main"]).pack(side="left")
+        
+        self.ent_ara_ogr = ctk.CTkEntry(top_f, placeholder_text="🔍 İsim veya Email Ara...", width=200, height=35, fg_color=COLORS["bg_dark"], border_color=COLORS["border"])
+        self.ent_ara_ogr.pack(side="right", padx=(0, 15))
+        self.ent_ara_ogr.bind("<KeyRelease>", self._islem_canli_ara_ogrenci)
+
         self.tree_ogrenci = self._create_tree(table_card, ("Öğrenci ID", "Ad Soyad", "Email"))
+        self._create_table_action(table_card, "❌ Seçili Öğrenciyi Sil", self._islem_ogrenci_sil)
 
     def _page_kurs(self):
         frame = ctk.CTkFrame(self.content_area, fg_color="transparent")
@@ -496,7 +507,16 @@ class AdminDashboard(ctk.CTkFrame):
         table_card = ctk.CTkFrame(frame, fg_color=COLORS["bg_card"], corner_radius=15)
         table_card.pack(side="right", fill="both", expand=True)
         
-        self._create_table_header(table_card, "Aktif Kurslar (Detay için çift tıkla)")
+        # ---> CANLI ARAMA <---
+        top_f = ctk.CTkFrame(table_card, fg_color="transparent")
+        top_f.pack(fill="x", padx=25, pady=(25, 5))
+        
+        ctk.CTkLabel(top_f, text="Aktif Kurslar (Detay için çift tıkla)", font=ctk.CTkFont(size=18, weight="bold"), text_color=COLORS["text_main"]).pack(side="left")
+        
+        self.ent_ara_kurs = ctk.CTkEntry(top_f, placeholder_text="🔍 Kurs Ara...", width=200, height=35, fg_color=COLORS["bg_dark"], border_color=COLORS["border"])
+        self.ent_ara_kurs.pack(side="right", padx=(0, 15))
+        self.ent_ara_kurs.bind("<KeyRelease>", self._islem_canli_ara_kurs)
+
         self.tree_kurs = self._create_tree(table_card, ("Kurs Kodu", "Kurs Adı", "Eğitmen", "Doluluk", "Fiyat"))
         self.tree_kurs.bind("<Double-1>", self._islem_kurs_detay_goster)
 
@@ -515,7 +535,6 @@ class AdminDashboard(ctk.CTkFrame):
         ctk.CTkLabel(card, text="⚡ Kursa Entegrasyon", font=ctk.CTkFont(size=22, weight="bold"), text_color=COLORS["text_main"]).pack(pady=(35, 10))
         ctk.CTkLabel(card, text="Sistemde var olan öğrenciyi kursa bağlayın.", font=self.f_label, text_color=COLORS["text_muted"]).pack(pady=(0, 20))
 
-        # GÖRSEL YANILGI BURADA DÜZELTİLDİ: "Örn: 1"
         self.ent_kayit_ogr = self._create_input(card, "Öğrenci ID Numarası", "Örn: 1")
         self.ent_kayit_kurs = self._create_input(card, "Kurs Kodu", "Örn: PY101")
         
@@ -524,7 +543,7 @@ class AdminDashboard(ctk.CTkFrame):
 
     def _page_veritabani(self):
         frame = ctk.CTkFrame(self.content_area, fg_color="transparent")
-        self.frames[" Veritabanı Gezgini"] = frame
+        self.frames["Veritabanı Gezgini"] = frame
         
         card = ctk.CTkFrame(frame, fg_color=COLORS["bg_card"], corner_radius=15)
         card.pack(fill="both", expand=True)
@@ -588,13 +607,38 @@ class AdminDashboard(ctk.CTkFrame):
                 ana_lbl.configure(text=str(v))
                 detay_lbl.configure(text=detaylar[k])
         
+        # CİRO HESAPLAMA
+        if hasattr(self, 'lbl_ciro'):
+            toplam_ciro = sum([len(k.ogrenciler) * k.fiyat for k in self.kurslar.values()])
+            self.lbl_ciro.configure(text=f"{toplam_ciro:,.2f} ₺")
+
         def pop(t, d):
             for r in t.get_children(): t.delete(r)
             for i in d: t.insert("", "end", values=i)
             
         pop(self.tree_egitmen, [(e.ad, e.uzmanlik) for e in self.egitmenler])
-        pop(self.tree_ogrenci, [(o.id, o.ad, o.email) for o in self.ogrenciler.values()])
-        pop(self.tree_kurs, [(k.id, k.ad, k.egitmen.ad if k.egitmen else "Bilinmiyor", f"{len(k.ogrenciler)}/{k.kont}", f"{k.fiyat:.2f} ₺") for k in self.kurslar.values()])
+        
+        # Arama Filtresine Göre Güncelle (Eğer arama boşsa hepsini yazar)
+        self._islem_canli_ara_ogrenci()
+        self._islem_canli_ara_kurs()
+
+    # --- CANLI ARAMA (LIVE SEARCH) METOTLARI ---
+    def _islem_canli_ara_ogrenci(self, event=None):
+        query = self.ent_ara_ogr.get().lower().strip()
+        for r in self.tree_ogrenci.get_children(): self.tree_ogrenci.delete(r)
+        
+        for o in self.ogrenciler.values():
+            if query in o.ad.lower() or query in o.email.lower() or query in str(o.id):
+                self.tree_ogrenci.insert("", "end", values=(o.id, o.ad, o.email))
+
+    def _islem_canli_ara_kurs(self, event=None):
+        query = self.ent_ara_kurs.get().lower().strip()
+        for r in self.tree_kurs.get_children(): self.tree_kurs.delete(r)
+        
+        for k in self.kurslar.values():
+            e_ad = k.egitmen.ad if k.egitmen else "Bilinmiyor"
+            if query in k.id.lower() or query in k.ad.lower() or query in e_ad.lower():
+                self.tree_kurs.insert("", "end", values=(k.id, k.ad, e_ad, f"{len(k.ogrenciler)}/{k.kont}", f"{k.fiyat:.2f} ₺"))
 
     def _islem_egitmen_ekle(self):
         ad = self.ent_egitmen_ad.get().strip()
@@ -611,7 +655,6 @@ class AdminDashboard(ctk.CTkFrame):
             messagebox.showinfo("Başarılı", mesaj)
         else: messagebox.showerror("Hata", mesaj)
 
-    # ÖĞRENCİ EKLEME MANTIĞI OTOMATİK ID'YE GÖRE DÜZENLENDİ
     def _islem_ogrenci_ekle(self):
         ad, mail = self.ent_ogr_ad.get().strip(), self.ent_ogr_email.get().strip()
         
@@ -619,7 +662,6 @@ class AdminDashboard(ctk.CTkFrame):
         if any(char.isdigit() for char in ad): return messagebox.showwarning("Hatalı Giriş", "Öğrenci adında rakam bulunamaz!")
         if "@" not in mail or "." not in mail: return messagebox.showwarning("Hatalı Giriş", "Lütfen geçerli e-posta girin!")
         
-        # ID veritabanından alınıyor
         basarili, mesaj, yeni_id = self.db.ogrenci_ekle(ad, mail)
         if basarili:
             self.ogrenciler[yeni_id] = Ogrenci(yeni_id, ad, mail)
@@ -762,7 +804,7 @@ class AdminDashboard(ctk.CTkFrame):
 class AppController(ctk.CTk):
     def __init__(self):
         super().__init__()
-        self.title("🎓 ProKurs | Admin Dashboard v13.1")
+        self.title("🎓 ProKurs | Admin Dashboard v14.1 (Premium)")
         self.geometry("1400x850")
         self.minsize(1200, 750)
         self.configure(fg_color=COLORS["bg_dark"])
