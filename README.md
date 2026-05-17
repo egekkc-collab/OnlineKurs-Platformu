@@ -1,6 +1,8 @@
 # 🎓 ProKurs - Modern Kurs ve Öğrenci Yönetim Sistemi
 
 ProKurs, Python ve **CustomTkinter** kullanılarak geliştirilmiş, modern bir kullanıcı arayüzüne sahip (Dark Mode) masaüstü otomasyon programıdır. Eğitim kurumlarının öğrenci, eğitmen ve kurs süreçlerini yönetmesi için tasarlanmıştır. Veritabanı olarak **SQLite** kullanılmıştır.
+<img width="1881" height="1000" alt="image" src="https://github.com/user-attachments/assets/51e38ddb-3fe7-49c1-ab61-4a843e19ac88" />
+
 
 ## 🚀 Özellikler
 
