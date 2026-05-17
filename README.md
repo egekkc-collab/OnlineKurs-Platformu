@@ -11,7 +11,6 @@ Profesyonel ve kullanıcı dostu bir Eğitim ve Kurs Yönetim Platformu. CustomT
 - 🛡️ **Yönetici Paneli** - Sisteme yetkisiz erişimleri engelleyen, sadece adminlerin girebildiği korumalı ana ekran
 - ⚠️ **Akıllı Bildirimler** - Boş alan bırakıldığında veya hatalı şifre girildiğinde anlık olarak beliren uyarı metinleri
 
-<img width="1440" height="900" alt="Giris Ekrani Goruntusu" src="https://github.com/user-attachments/assets/ornek-link-buraya-gelecek-0" />
 
 # 📊 Dashboard ve İstatistikler
 - 📈 **Sistem Özeti** - Eğitmen, öğrenci ve kurs sayılarının anlık takibi
