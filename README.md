@@ -2,7 +2,7 @@
 
 Profesyonel ve kullanıcı dostu bir Eğitim ve Kurs Yönetim Platformu. CustomTkinter ile geliştirilmiş, SQLite veritabanı desteğine sahip, modern, hızlı ve karanlık (dark) temalı lüks bir masaüstü arayüzü sunmaktadır.
 
-**🎨 Tema Renkleri:** Ana Mavi (#3b82f6) | Başarı Yeşili (#10b981) | Koyu Arka Plan (#09090b)
+
 
 
 
