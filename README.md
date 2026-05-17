@@ -9,9 +9,9 @@ Profesyonel ve kullanıcı dostu bir Eğitim ve Kurs Yönetim Platformu. CustomT
 <img width="1187" height="751" alt="image" src="https://github.com/user-attachments/assets/a577d035-1523-418f-b955-8374aee6389e" />
 
 - ✨ **İnteraktif Tasarım** - Tıklandığında rengi değişen (Focus) giriş kutuları ve şifre gizleme (•) özelliği
-- 
+  
 - 🛡️ **Yönetici Paneli** - Sisteme yetkisiz erişimleri engelleyen, sadece adminlerin girebildiği korumalı ana ekran
-- 
+  
 - ⚠️ **Akıllı Bildirimler** - Boş alan bırakıldığında veya hatalı şifre girildiğinde anlık olarak beliren uyarı metinleri
 
 
