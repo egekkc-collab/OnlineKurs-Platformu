@@ -16,7 +16,7 @@ Profesyonel ve kullanıcı dostu bir Eğitim ve Kurs Yönetim Platformu. CustomT
 
 # 📊 Dashboard ve İstatistikler
 
-- <img width="1914" height="1014" alt="image" src="https://github.com/user-attachments/assets/f1495ecb-0a4f-479c-a5ec-31d86e679f5d" />
+ <img width="1914" height="1014" alt="image" src="https://github.com/user-attachments/assets/f1495ecb-0a4f-479c-a5ec-31d86e679f5d" />
 
 - 📈 **Sistem Özeti** - Eğitmen, öğrenci ve kurs sayılarının anlık takibi
 - 💸 **Otomatik Ciro Hesabı** - Kayıtlı öğrenci sayısı ve kurs fiyatına göre anlık toplam gelir hesaplaması
