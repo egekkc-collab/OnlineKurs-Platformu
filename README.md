@@ -34,9 +34,6 @@ Profesyonel ve kullanıcı dostu bir Eğitim ve Kurs Yönetim Platformu. CustomT
 - 🛡️ **Akıllı Form Doğrulaması** - Form alanlarının boş bırakılmasını veya isim/uzmanlık alanına yanlışlıkla rakam girilmesini engelleyen arka plan güvenlik kontrolü
 - ✨ **Görsel Geri Bildirim** - Eğitmen eklendiğinde veya silindiğinde anında beliren, başarılı/başarısız durumuna göre renk değiştiren bilgi mesajları
 
-<img width="1440" height="900" alt="Egitmen Yonetimi Goruntusu" src="https://github.com/user-attachments/assets/ornek-link-buraya-gelecek-4" />
-
-<img width="1440" height="900" alt="Kurs Yonetimi Goruntusu" src="https://github.com/user-attachments/assets/ornek-link-buraya-gelecek-2" />
 
 # 👨‍🏫 Eğitmen ve Öğrenci Yönetimi
 - ➕ **Eğitmen Ekle** - Ad, soyad ve uzmanlık alanı ile sisteme eğitmen kaydı
