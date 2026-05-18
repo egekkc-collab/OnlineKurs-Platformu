@@ -30,11 +30,14 @@ Profesyonel ve kullanıcı dostu bir Eğitim ve Kurs Yönetim Platformu. CustomT
 
 <img width="1904" height="999" alt="image" src="https://github.com/user-attachments/assets/bb3a1ed2-41d4-4d10-8b28-016ce1a31b58" />
 
-- ➕ **Kurs Oluşturma** - Kurs kodu, adı, eğitmeni, kontenjanı ve fiyatı ile yeni sınıf açma
-- 🔍 **Canlı Arama (Live Search)** - Tuşa basıldığı anda binlerce kurs arasından anında filtreleme
-- 📋 **Detaylı Görünüm** - Listedeki kursa çift tıklayarak o kursa özel öğrenci listesini inceleme
-- ⚡ **Hızlı Kayıt (Entegrasyon)** - Sadece öğrenci ID ve kurs kodu girerek tek tıkla öğrenciyi kursa bağlama
-- ❌ **Kurstan Çıkarma** - Detay penceresinden seçili öğrencinin kurs ilişiğini kesme
+# 👨‍🏫 Eğitmen Yönetimi
+- ➕ **Hızlı Eğitmen Kaydı** - Sol taraftaki özel form arayüzü sayesinde "Ad Soyad" ve "Uzmanlık Alanı" girilerek sisteme anında yeni eğitmen ekleme
+- 📋 **Dinamik Eğitmen Tablosu** - Sistemde kayıtlı olan tüm uzman kadroyu geniş, okunabilir ve modern bir liste halinde görüntüleme
+- 🗑️ **Tek Tıkla Kayıt Silme** - Sağ taraftaki listeden herhangi bir eğitmeni seçip alt kısımdaki kırmızı butonla sistemden kalıcı olarak çıkarma
+- 🛡️ **Akıllı Form Doğrulaması** - Form alanlarının boş bırakılmasını veya isim/uzmanlık alanına yanlışlıkla rakam girilmesini engelleyen arka plan güvenlik kontrolü
+- ✨ **Görsel Geri Bildirim** - Eğitmen eklendiğinde veya silindiğinde anında beliren, başarılı/başarısız durumuna göre renk değiştiren bilgi mesajları
+
+<img width="1440" height="900" alt="Egitmen Yonetimi Goruntusu" src="https://github.com/user-attachments/assets/ornek-link-buraya-gelecek-4" />
 
 <img width="1440" height="900" alt="Kurs Yonetimi Goruntusu" src="https://github.com/user-attachments/assets/ornek-link-buraya-gelecek-2" />
 
