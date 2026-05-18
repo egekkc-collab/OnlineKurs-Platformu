@@ -24,13 +24,10 @@ Profesyonel ve kullanıcı dostu bir Eğitim ve Kurs Yönetim Platformu. CustomT
 - 📅 **Tarih Entegrasyonu** - Sistemin kullanıldığı günün anlık tarih gösterimi
 
 
-
-
-# 📚 Kurs Yönetimi ve Kayıt İşlemleri
+# 👨‍🏫 Eğitmen Yönetimi
 
 <img width="1904" height="999" alt="image" src="https://github.com/user-attachments/assets/bb3a1ed2-41d4-4d10-8b28-016ce1a31b58" />
 
-# 👨‍🏫 Eğitmen Yönetimi
 -  **Hızlı Eğitmen Kaydı** - Sol taraftaki özel form arayüzü sayesinde "Ad Soyad" ve "Uzmanlık Alanı" girilerek sisteme anında yeni eğitmen ekleme
 - 📋 **Dinamik Eğitmen Tablosu** - Sistemde kayıtlı olan tüm uzman kadroyu geniş, okunabilir ve modern bir liste halinde görüntüleme
 - 🗑️ **Tek Tıkla Kayıt Silme** - Sağ taraftaki listeden herhangi bir eğitmeni seçip alt kısımdaki kırmızı butonla sistemden kalıcı olarak çıkarma
