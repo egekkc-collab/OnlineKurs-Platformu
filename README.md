@@ -25,9 +25,11 @@ Profesyonel ve kullanıcı dostu bir Eğitim ve Kurs Yönetim Platformu. CustomT
 
 
 
-<img width="1904" height="999" alt="image" src="https://github.com/user-attachments/assets/effa37f3-f042-4967-a976-7dcb34af1cbc" />
 
 # 📚 Kurs Yönetimi ve Kayıt İşlemleri
+
+<img width="1904" height="999" alt="image" src="https://github.com/user-attachments/assets/bb3a1ed2-41d4-4d10-8b28-016ce1a31b58" />
+
 - ➕ **Kurs Oluşturma** - Kurs kodu, adı, eğitmeni, kontenjanı ve fiyatı ile yeni sınıf açma
 - 🔍 **Canlı Arama (Live Search)** - Tuşa basıldığı anda binlerce kurs arasından anında filtreleme
 - 📋 **Detaylı Görünüm** - Listedeki kursa çift tıklayarak o kursa özel öğrenci listesini inceleme
