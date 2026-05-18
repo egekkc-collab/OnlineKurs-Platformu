@@ -1,6 +1,6 @@
 # 🎓 PROKURS - EĞİTİM YÖNETİM SİSTEMİ
 
-Profesyonel ve kullanıcı dostu bir Eğitim ve Kurs Yönetim Platformu. CustomTkinter ile geliştirilmiş, SQLite veritabanı desteğine sahip, modern, hızlı ve karanlık (dark) temalı lüks bir masaüstü arayüzü sunmaktadır.
+Profesyonel Eğitim ve Kurs Yönetim Platformu. CustomTkinter ile geliştirilmiş,  SQLite veritabanı desteğine sahip, modern, hızlı ve dark temalı bir masaüstü arayüzü sunmaktadır.
 
 
 
