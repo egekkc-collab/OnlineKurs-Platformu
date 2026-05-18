@@ -1,4 +1,4 @@
-# 🎓 PROKURS - EĞİTİM YÖNETİM SİSTEMİ
+# 🎓 PROKURS - ONLİNE KURS SİSTEMİ
 
 Profesyonel Eğitim ve Kurs Yönetim Platformu. CustomTkinter ile geliştirilmiş,  SQLite veritabanı desteğine sahip, modern, hızlı ve dark temalı bir masaüstü arayüzü sunmaktadır.
 
