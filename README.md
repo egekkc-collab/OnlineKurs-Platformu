@@ -25,7 +25,7 @@ Profesyonel ve kullanıcı dostu bir Eğitim ve Kurs Yönetim Platformu. CustomT
 
 
 
-<img width="1440" height="900" alt="Dashboard Goruntusu" src="https://github.com/user-attachments/assets/ornek-link-buraya-gelecek-1" />
+<img width="1904" height="999" alt="image" src="https://github.com/user-attachments/assets/effa37f3-f042-4967-a976-7dcb34af1cbc" />
 
 # 📚 Kurs Yönetimi ve Kayıt İşlemleri
 - ➕ **Kurs Oluşturma** - Kurs kodu, adı, eğitmeni, kontenjanı ve fiyatı ile yeni sınıf açma
